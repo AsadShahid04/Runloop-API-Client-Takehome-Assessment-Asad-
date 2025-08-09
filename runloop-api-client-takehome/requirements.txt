@@ -1,0 +1,11 @@
+# RunLoop API Client Takehome Assessment Dependencies
+# Python requirements for the assessment tasks
+
+# RunLoop API Client SDK
+runloop-api-client>=0.54.0
+
+# Standard libraries for file operations and environment management
+python-dotenv>=1.0.0
+
+# Additional utilities
+requests>=2.28.0
