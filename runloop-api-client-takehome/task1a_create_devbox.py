@@ -17,13 +17,6 @@ import sys
 from typing import Dict, Any
 from runloop_api_client import Runloop
 
-# Remove dotenv import since we're reading from answers.json
-# from dotenv import load_dotenv
-
-# Remove dotenv loading
-# load_dotenv()
-
-
 class DevboxManager:
     """Manages devbox creation and configuration for RunLoop assessment."""
     
@@ -74,28 +67,29 @@ class DevboxManager:
         """
         try:
             print(f"Creating devbox with name: {self.devbox_name}")
+            print(f"Using API endpoint: https://api.runloop.pro")
+            print(f"API key (first 10 chars): {self.api_key[:10]}...")
             
-            # Create devbox using RunLoop SDK
-            devbox_view = self.client.devboxes.create(
-                name=self.devbox_name
+            # Create devbox using RunLoop SDK with create_args
+            print("Creating devbox...")
+            running_devbox = self.client.devboxes.create_and_await_running(
+                create_args={"name": self.devbox_name}
             )
             
-            # Wait for devbox to be running
-            self.client.devboxes.await_running(devbox_view.id)
-            
             print(f"✅ Successfully created devbox!")
-            print(f"   Name: {devbox_view.name}")
-            print(f"   ID: {devbox_view.id}")
-            print(f"   Status: {devbox_view.status}")
+            print(f"   Name: {running_devbox.name}")
+            print(f"   ID: {running_devbox.id}")
+            print(f"   Status: {running_devbox.status}")
             
             return {
-                "name": devbox_view.name,
-                "id": devbox_view.id,
-                "status": devbox_view.status
+                "name": running_devbox.name,
+                "id": running_devbox.id,
+                "status": running_devbox.status
             }
             
         except Exception as e:
             print(f"❌ Error creating devbox: {str(e)}")
+            print(f"Error type: {type(e).__name__}")
             raise
     
     def update_answers_json(self, devbox_info: Dict[str, Any]) -> None:
